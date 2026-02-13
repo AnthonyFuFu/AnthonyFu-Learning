@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>會員列表</title>
+</head>
+<body>
+<h1>會員列表</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>MEM_ID</th>
+            <th>MEM_NAME</th>
+            <th>MEM_ACCOUNT</th>
+            <th>MEM_PASSWORD</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- 遍歷 memberList -->
+        <tr th:each="member : ${memberList}">
+            <td th:text="${member['MEM_ID']}">MEM_ID</td>
+            <td th:text="${member['MEM_NAME']}">MEM_NAME</td>
+            <td th:text="${member['MEM_ACCOUNT']}">MEM_ACCOUNT</td>
+            <td th:text="${member['MEM_PASSWORD']}">MEM_PASSWORD</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
