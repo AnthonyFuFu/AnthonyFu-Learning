@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
@@ -17,7 +18,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
