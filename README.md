@@ -49,7 +49,12 @@
 | 09 | [🟤 Elasticsearch](./Elasticsearch/Elasticsearch.md) | 倒排索引 / DSL 查詢 / 聚合 / ELK Stack |
 | 10 | [🔵 API 設計與通訊協議](./APIDesign_CommunicationProtocol/APIDesign_Communication-Protocol.md) | RESTful / gRPC / WebSocket / GraphQL |
 | 11 | [🔴 測試](./Testing/Testing.md) | JUnit 5 / Mockito / Testcontainers / TDD |
-
+| 12 | [⚡ Java 並發深度](./JavaConcurrency/JavaConcurrency.md) | Thread / synchronized / AQS / 線程池 / CompletableFuture |
+| 13 | [🔴 Redis 深度](./RedisDeep/RedisDeep.md) | 資料結構底層 / 持久化 / 分散式鎖 / 緩存問題 / Cluster |
+| 14 | [🟡 演算法與資料結構](./Algorithm/Algorithm.md) | 雙指針 / 滑動視窗 / 鏈表 / 樹 / DP / 排序 |
+| 15 | [☁️ Spring Cloud 微服務](./SpringCloud/SpringCloud.md) | Nacos / OpenFeign / Gateway / Sentinel / 分散式配置 |
+| 16 | [🌐 網路基礎](./NetworkBasics/NetworkBasics.md) | TCP / HTTP / HTTPS / DNS / CDN |
+| 17 | [🎨 前端深度](./FrontendDeep/FrontendDeep.md) | React / Vue 原理 / 效能優化 / TypeScript |
 ---
 
 ## 🏗️ 系統設計
