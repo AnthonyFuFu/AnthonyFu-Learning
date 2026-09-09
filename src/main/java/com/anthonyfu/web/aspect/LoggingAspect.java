@@ -22,39 +22,34 @@ public class LoggingAspect {
     // 前置通知
     @Before("serviceLayer()")
     public void beforeAdvice(JoinPoint joinPoint) {
-        System.out.println("Before method: " + joinPoint.getSignature().getName());
+//        System.out.println("Before method: " + joinPoint.getSignature().getName());
     }
     
     // 後置通知
     @After("serviceLayer()")
     public void afterAdvice(JoinPoint joinPoint) {
-        System.out.println("After method: " + joinPoint.getSignature().getName());
+//        System.out.println("After method: " + joinPoint.getSignature().getName());
     }
     
     // 返回通知
     @AfterReturning(pointcut = "serviceLayer()", returning = "result")
     public void afterReturningAdvice(JoinPoint joinPoint, Object result) {
-        System.out.println("AfterReturning Method " + joinPoint.getSignature().getName() 
-                         + " returned with value: " + result);
+//        System.out.println("AfterReturning Method " + joinPoint.getSignature().getName() + " returned with value: " + result);
     }
     
     // 異常通知
     @AfterThrowing(pointcut = "serviceLayer()", throwing = "error")
     public void afterThrowingAdvice(JoinPoint joinPoint, Throwable error) {
-        System.out.println("AfterThrowing Method " + joinPoint.getSignature().getName() 
-                         + " throws exception: " + error);
+        System.out.println("AfterThrowing Method " + joinPoint.getSignature().getName() + " throws exception: " + error);
     }
     
     // 環繞通知
     @Around("serviceLayer()")
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        
+//        long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
-        
-        long endTime = System.currentTimeMillis();
-        System.out.println("Around Method " + joinPoint.getSignature().getName() 
-                         + " execution time: " + (endTime - startTime) + "ms");
+//        long endTime = System.currentTimeMillis();
+//        System.out.println("Around Method " + joinPoint.getSignature().getName() + " execution time: " + (endTime - startTime) + "ms");
         
         return result;
     }

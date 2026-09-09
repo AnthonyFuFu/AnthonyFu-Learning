@@ -5,36 +5,54 @@ import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JobRunner implements CommandLineRunner {
 
-    @Autowired
-    private JobOperator jobOperator;
+	private final JobOperator jobOperator;
+	private final Job importMemberJob;
+	private final Job importUserJob;
+	private final Job importS3FileJob;
 
-    @Autowired
-    private Job importMemberJob;
-    
-    @Autowired
-    private Job importUserJob;
+	public JobRunner(JobOperator jobOperator,
+			@Qualifier("importMemberJob") Job importMemberJob,
+			@Qualifier("importUserJob") Job importUserJob,
+			@Qualifier("importS3FileJob") Job importS3FileJob) {
 
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println("Starting the batch job using the confirmed modern method...");
+		this.jobOperator = jobOperator;
+		this.importMemberJob = importMemberJob;
+		this.importUserJob = importUserJob;
+		this.importS3FileJob = importS3FileJob;
+	}
 
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis())
-                .toJobParameters();
+	@Override
+	public void run(String... args) throws Exception {
 
-        JobExecution memberId = jobOperator.start(importMemberJob, jobParameters);
+		System.out.println("Starting batch jobs...");
+		/*
+		 * 每次啟動都產生新的 JobParameters， 避免相同 JobInstance 已經執行完成而無法再次執行。
+		 */
+		JobParameters jobParameters = new JobParametersBuilder().addLong("startAt", System.currentTimeMillis()).toJobParameters();
 
-        System.out.println("Batch job has been launched with execution id: " + memberId);
+		/*
+		 * 1. 匯入 Member
+		 */
+//		JobExecution memberExecution = jobOperator.start(importMemberJob, jobParameters);
+//		System.out.println("Member batch job launched. Execution ID: " + memberExecution.getId());
 
-        JobExecution usrId = jobOperator.start(importUserJob, jobParameters);
+		/*
+		 * 2. 匯入 User
+		 */
+//		JobExecution userExecution = jobOperator.start(importUserJob, jobParameters);
+//		System.out.println("User batch job launched. Execution ID: " + userExecution.getId());
 
-        System.out.println("Batch job has been launched with execution id: " + usrId);
-    }
+		/*
+		 * 3. 匯入 S3 File
+		 */
+//		JobExecution s3FileExecution = jobOperator.start(importS3FileJob, jobParameters);
+//		System.out.println("S3 File batch job launched. Execution ID: " + s3FileExecution.getId());
+	}
 }

@@ -1,0 +1,102 @@
+# 共用設定
+spring:
+  profiles:
+    active: qas
+
+  application:
+    name: anthonyfu_learning
+
+  security:
+    user:
+      name: admin
+      password: 123456
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/anthonyfu_learning?serverTimezone=Asia/Taipei
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      minimum-idle: 5
+      maximum-pool-size: 20
+
+      # idle-timeout: 300000
+      # max-lifetime: 1800000
+      # connection-timeout: 30000
+      # validation-timeout: 5000
+      # pool-name: HikariPool
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+
+  batch:
+    job:
+      enabled: false
+
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      hibernate: warn
+
+app:
+  base-url: ENC(IwaS3E8P9NygPrZF7Cs7CALzuFbqzP11o8TgCiB6qeLDDT9i3eboEp7EE2hbmQnxeOCnw46lsLFC3EYGLtErCg==)
+  error-dir: src/main/resources
+# DEV
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    pg:
+      jdbc-url: jdbc:postgresql://aws-whq-plm-db-dev.cr64omq04s4f.ap-southeast-1.rds.amazonaws.com:5432/plmaws
+      username: plmaws
+      password: ENC(K9ElzRDK71CvFFOR58dXIl/BAuogFVWd)
+      driver-class-name: org.postgresql.Driver
+
+aws:
+  s3:
+    region: ap-southeast-1
+    bucket-name: aws-whq-plm-s3-dev
+    access-key: ENC(TfZ+C7eZM/C8lz9ZDTDlyzBhnO+CNeit7XvH09ztDgI=)
+    secret-key: ENC(kkVNlQFOGzf8eerLS78VejbpMt5s8160k80pMPBIUJUrSGLeYFpXjryIN5ROpOlaibT2ZiqZvYo=)
+
+# QAS
+---
+spring:
+  config:
+    activate:
+      on-profile: qas
+
+  datasource:
+    pg:
+      jdbc-url: jdbc:postgresql://aws-whq-plm-db-qas.cbueagicmovw.ap-southeast-1.rds.amazonaws.com:5432/plmaws
+      username: plmaws
+      password: ENC(R2YXwTHCaeaq+w4LJNSY2BJQt0V495yK)
+      driver-class-name: org.postgresql.Driver
+
+aws:
+  s3:
+    region: ap-southeast-1
+    bucket-name: aws-whq-plm-s3-qas
+    access-key: ENC(89Klg4PpKMBAH6Ii4d375j6B/pyPhoqKkX6iRNdUZr0=)
+    secret-key: ENC(/syuv+2sFV5psFRm4XZKqYEV7ds1QUGKhflXjX+szu926wXtznsoZWvEyW4+n8VQHC3Aci3tY/k=)
