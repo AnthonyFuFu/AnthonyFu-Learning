@@ -20,58 +20,39 @@ import com.anthonyfu.web.model.S3FileUploadHistoryEntity;
 @Service
 public class S3ErrorCsvService {
 
-    /**
-     * 記錄 s3_file 寫入失敗資料
-     */
-    private final List<S3FileEntity> s3ErrorList =
-            Collections.synchronizedList(new ArrayList<>());
+    // 記錄 s3_file 寫入失敗資料
+	private final List<S3FileEntity> s3ErrorList = Collections.synchronizedList(new ArrayList<>());
 
-    /**
-     * 記錄 s3_file_upload_history 寫入失敗資料
-     */
-    private final List<S3FileUploadHistoryEntity> s3HistoryErrorList =
-            Collections.synchronizedList(new ArrayList<>());
+    // 記錄 s3_file_upload_history 寫入失敗資料
+	private final List<S3FileUploadHistoryEntity> s3HistoryErrorList = Collections.synchronizedList(new ArrayList<>());
 
-    /**
-     * 預設輸出到 src/main/resources
-     */
+    // 預設輸出到 src/main/resources
     @Value("${app.error-dir}")
     private String errorDirectory;
 
     private static final String S3_ERROR_FILE_NAME = "S3Error.csv";
     private static final String S3_HISTORY_ERROR_FILE_NAME = "S3HistoryError.csv";
 
-    /**
-     * 記錄 s3_file 失敗資料
-     */
+    // 記錄 s3_file 失敗資料
     public synchronized void recordS3Error(S3FileEntity entity) {
         if (entity == null) {
             return;
         }
-
         s3ErrorList.add(entity);
         appendS3ErrorCsv(entity);
     }
 
-    /**
-     * 記錄 s3_file_upload_history 失敗資料
-     */
+    // 記錄 s3_file_upload_history 失敗資料
     public synchronized void recordS3HistoryError(S3FileUploadHistoryEntity entity) {
         if (entity == null) {
             return;
         }
-
         s3HistoryErrorList.add(entity);
         appendS3HistoryErrorCsv(entity);
     }
 
-    /**
-     * 同時記錄 s3_file 與 s3_file_upload_history 失敗資料
-     */
-    public synchronized void recordBoth(
-            S3FileEntity fileEntity,
-            S3FileUploadHistoryEntity historyEntity) {
-
+    // 同時記錄 s3_file 與 s3_file_upload_history 失敗資料
+	public synchronized void recordBoth(S3FileEntity fileEntity, S3FileUploadHistoryEntity historyEntity) {
         recordS3Error(fileEntity);
         recordS3HistoryError(historyEntity);
     }
@@ -106,8 +87,7 @@ public class S3ErrorCsvService {
         appendCsv(S3_ERROR_FILE_NAME, header, content);
     }
 
-    private void appendS3HistoryErrorCsv(
-            S3FileUploadHistoryEntity entity) {
+	private void appendS3HistoryErrorCsv(S3FileUploadHistoryEntity entity) {
 
         String header =
                 "object_key,bucket_name,file_name,file_size,"
@@ -128,10 +108,7 @@ public class S3ErrorCsvService {
         appendCsv(S3_HISTORY_ERROR_FILE_NAME, header, content);
     }
 
-    private void appendCsv(
-            String fileName,
-            String header,
-            String content) {
+	private void appendCsv(String fileName, String header, String content) {
 
         try {
             Path directoryPath = Paths.get(errorDirectory);
@@ -140,62 +117,36 @@ public class S3ErrorCsvService {
             Path filePath = directoryPath.resolve(fileName);
 
             boolean fileExists = Files.exists(filePath);
-            boolean fileHasContent =
-                    fileExists && Files.size(filePath) > 0;
+			boolean fileHasContent = fileExists && Files.size(filePath) > 0;
 
-            if (!fileHasContent) {
-                Files.writeString(
-                        filePath,
-                        header + System.lineSeparator(),
-                        StandardCharsets.UTF_8,
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.APPEND);
-            }
-
-            Files.writeString(
-                    filePath,
-                    content + System.lineSeparator(),
-                    StandardCharsets.UTF_8,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND);
-
+			if (!fileHasContent) {
+				Files.writeString(filePath, header + System.lineSeparator(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+			}
+			Files.writeString(filePath, content + System.lineSeparator(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             System.out.println("⚠️ 錯誤資料已寫入 CSV：" + filePath);
 
         } catch (IOException e) {
-            /*
-             * CSV 寫入失敗不能再拋出，否則會蓋掉原始錯誤資訊。
-             */
-            System.err.println("❌ CSV 錯誤紀錄寫入失敗：" + fileName);
+            System.err.println("❌ CSV 錯誤紀錄寫入失敗：" + fileName); // CSV 寫入失敗不能再拋出，否則會蓋掉原始錯誤資訊。
             e.printStackTrace();
         }
     }
 
-    /**
-     * CSV 欄位處理：
-     * 逗號、雙引號、換行都需要用雙引號包起來。
-     */
-    private String csv(Object value) {
-        if (value == null) {
-            return "";
-        }
-
-        String text;
-
-        if (value instanceof Timestamp) {
-            text = value.toString();
-        } else {
-            text = String.valueOf(value);
-        }
-
-        text = text.replace("\"", "\"\"");
-
-        if (text.contains(",")
-                || text.contains("\"")
-                || text.contains("\n")
-                || text.contains("\r")) {
-            return "\"" + text + "\"";
-        }
-
-        return text;
-    }
+    // CSV 欄位處理：逗號、雙引號、換行都需要用雙引號包起來。
+	private String csv(Object value) {
+		if (value == null) {
+			return "";
+		}
+		String text;
+		if (value instanceof Timestamp) {
+			text = value.toString();
+		} else {
+			text = String.valueOf(value);
+		}
+		text = text.replace("\"", "\"\"");
+		if (text.contains(",") || text.contains("\"") || text.contains("\n") || text.contains("\r")) {
+			return "\"" + text + "\"";
+		}
+		return text;
+	}
+	
 }
