@@ -16,22 +16,22 @@ import lombok.ToString;
 @NonNull
 @ToString
 @Entity
-@Table(name = "member")
+@Table(name = "member", schema = "anthonyfu_learning")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "MEM_ID")
+	@Column(name = "MEM_ID", length = 255)
 	private String memId; // 會員ID
 
-	@Column(name = "MEM_NAME")
+	@Column(name = "MEM_NAME", length = 45)
 	private String memName; // 姓名
 
-	@Column(name = "MEM_ACCOUNT")
+	@Column(name = "MEM_ACCOUNT", length = 50)
 	private String memAccount; // 帳號
 
-	@Column(name = "MEM_PASSWORD")
+	@Column(name = "MEM_PASSWORD", length = 20)
 	private String memPassword; // 密碼
 
 }

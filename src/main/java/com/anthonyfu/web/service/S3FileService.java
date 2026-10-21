@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +24,9 @@ import com.anthonyfu.web.repository.S3FileRepository;
 import com.anthonyfu.web.util.FileUtil;
 import com.anthonyfu.web.util.S3Util;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class S3FileService {
 
@@ -59,116 +63,93 @@ public class S3FileService {
 		List<S3FileDto> list = s3FileRepository.findAllProjectedBy();
 
 		if (list == null || list.isEmpty()) {
-			System.out.println("查無資料");
+			log.info("查無資料");
 			return;
 		}
 		// =====================================================
 		// 測試階段先依年份分組
-		// 正式搬資料時，可以再啟用 allList
 		// =====================================================
-
-		// List<S3FileDto> allList = new ArrayList<>(list);
-		List<S3FileDto> list2015 = list.stream().filter(dto -> "15".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2016 = list.stream().filter(dto -> "16".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2017 = list.stream().filter(dto -> "17".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2018 = list.stream().filter(dto -> "18".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2019 = list.stream().filter(dto -> "19".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2020 = list.stream().filter(dto -> "20".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2021 = list.stream().filter(dto -> "21".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-
-		List<S3FileDto> list2022 = list.stream().filter(dto -> "22".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2023 = list.stream().filter(dto -> "23".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2024 = list.stream().filter(dto -> "24".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2025 = list.stream().filter(dto -> "25".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-		List<S3FileDto> list2026 = list.stream().filter(dto -> "26".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
-
-		System.out.println("全部資料筆數: " + list.size());
-		System.out.println("2015 資料筆數: " + list2015.size());
-		System.out.println("2016 資料筆數: " + list2016.size());
-		System.out.println("2017 資料筆數: " + list2017.size());
-		System.out.println("2018 資料筆數: " + list2018.size());
-		System.out.println("2019 資料筆數: " + list2019.size());
-		System.out.println("2020 資料筆數: " + list2020.size());
-		System.out.println("2021 資料筆數: " + list2021.size());
-
-		System.out.println("2022 資料筆數: " + list2022.size());
-		System.out.println("2023 資料筆數: " + list2023.size());
-		System.out.println("2024 資料筆數: " + list2024.size());
-		System.out.println("2025 資料筆數: " + list2025.size());
-		System.out.println("2026 資料筆數: " + list2026.size());
-		// =====================================================
-		// 目前測試階段，可以先各處理第一筆
-		// =====================================================
+//		List<S3FileDto> list2015 = list.stream().filter(dto -> "15".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2016 = list.stream().filter(dto -> "16".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2017 = list.stream().filter(dto -> "17".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2018 = list.stream().filter(dto -> "18".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2019 = list.stream().filter(dto -> "19".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2020 = list.stream().filter(dto -> "20".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2021 = list.stream().filter(dto -> "21".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2022 = list.stream().filter(dto -> "22".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2023 = list.stream().filter(dto -> "23".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2024 = list.stream().filter(dto -> "24".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2025 = list.stream().filter(dto -> "25".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		List<S3FileDto> list2026 = list.stream().filter(dto -> "26".equals(FileUtil.getYear(dto.getVirtualPath()))).toList();
+//		log.info("2015 資料筆數: " + list2015.size());
+//		log.info("2016 資料筆數: " + list2016.size());
+//		log.info("2017 資料筆數: " + list2017.size());
+//		log.info("2018 資料筆數: " + list2018.size());
+//		log.info("2019 資料筆數: " + list2019.size());
+//		log.info("2020 資料筆數: " + list2020.size());
+//		log.info("2021 資料筆數: " + list2021.size());
+//		log.info("2022 資料筆數: " + list2022.size());
+//		log.info("2023 資料筆數: " + list2023.size());
+//		log.info("2024 資料筆數: " + list2024.size());
+//		log.info("2025 資料筆數: " + list2025.size());
+//		log.info("2026 資料筆數: " + list2026.size());
 //		processList("2015", list2015);
 //		processList("2016", list2016);
 //		processList("2017", list2017);
 //		processList("2018", list2018);
 //		processList("2019", list2019);
-
-		processList("2022", list2022);
-		processList("2023", list2023);
-		processList("2024", list2024);
-		processList("2025", list2025);
-		processList("2026", list2026);
-		// 正式搬資料時再使用全部資料
-		// processYearList("ALL", allList);
+//		processList("2020", list2020);
+//		processList("2021", list2021);
+//		processList("2022", list2022);
+//		processList("2023", list2023);
+//		processList("2024", list2024);
+//		processList("2025", list2025);
+//		processList("2026", list2026);
+		
+		// 正式搬資料時使用全部資料
+		List<S3FileDto> allList = new ArrayList<>(list);
+		log.info("全部資料筆數: " + list.size());
+		processList("ALL", allList);
 	}
 	
-//	private void processList(String year, List<S3FileDto> yearList) {
-//		if (yearList == null || yearList.isEmpty()) {
-//			System.out.println(year + " 查無資料");
-//			return;
-//		}
-//		S3FileDto dto = yearList.get(0);
-//
-//		System.out.println("========== " + year + " 第一筆資料 ==========");
-//		System.out.println("serialID    : " + dto.getSerialID());
-//		System.out.println("fPath       : " + dto.getFPath());
-//		System.out.println("fSaveName   : " + dto.getFSaveName());
-//		System.out.println("fSize       : " + dto.getFSize());
-//		System.out.println("accessStart : " + dto.getAccessStart());
-//		System.out.println("accessEnd   : " + dto.getAccessEnd());
-//		System.out.println("accessUser  : " + dto.getAccessUser());
-//		System.out.println("virtualPath : " + dto.getVirtualPath());
-//		System.out.println("總筆數      : " + yearList.size());
-//		System.out.println("========================================");
-//
-//		// 測試階段先處理第一筆
-//		processFile(dto);
-//	}
-	private void processList(String year, List<S3FileDto> yearList) {
-	    if (yearList == null || yearList.isEmpty()) {
-	        System.out.println(year + " 查無資料");
+	private void processList(String label, List<S3FileDto> fileList) {
+	    if (fileList == null || fileList.isEmpty()) {
+	        log.info(label + " 查無資料");
 	        return;
 	    }
-	    System.out.println("========== " + year + " 資料分類開始 ==========");
-	    System.out.println(year + " 原始資料筆數: " + yearList.size());
-
-		Map<String, List<S3FileDto>> categoryMap = yearList.stream().collect(Collectors.groupingBy(dto -> FileUtil.getFolderPrefix(dto.getFSaveName()), LinkedHashMap::new, Collectors.toList()));
-		
-	    // 固定依照指定的七個類別處理，避免因為資料不存在而漏掉類別。
-	    for (String categoryPrefix : CATEGORY_PREFIXES) {
-
-	        List<S3FileDto> categoryList = categoryMap
-	                .getOrDefault(categoryPrefix, List.of())
-	                .stream()
-	                .limit(MAX_FILE_COUNT_PER_CATEGORY)
-	                .toList();
-
-	        processCategoryList(year, categoryPrefix, categoryList);
+	    if ("ALL".equals(label)) {
+		    log.info("========== " + label + " 開始處理 ==========");
+		    log.info(label + " 資料筆數: " + fileList.size());
+		    for (S3FileDto dto : fileList) {
+		        processFile(dto); // 正式搬資料時使用全部資料
+		    }
+		    log.info("========== " + label + " 處理完成 ==========");
+	    } else {
+	    	
+		    log.info("========== " + label + " 資料分類開始 ==========");
+		    log.info(label + " 資料筆數: " + fileList.size());
+		    
+			Map<String, List<S3FileDto>> categoryMap = fileList.stream().collect(Collectors.groupingBy(dto -> FileUtil.getFolderPrefix(dto.getFSaveName()), LinkedHashMap::new, Collectors.toList()));
+			
+		    // 固定依照指定的七個類別處理，避免因為資料不存在而漏掉類別。
+		    for (String categoryPrefix : CATEGORY_PREFIXES) {
+		    	// 每類限制200筆資料
+		        List<S3FileDto> categoryList = categoryMap.getOrDefault(categoryPrefix, List.of()).stream().limit(MAX_FILE_COUNT_PER_CATEGORY).toList();
+		        processCategoryList(label, categoryPrefix, categoryList);
+		    }
+		    log.info("========== " + label + " 資料分類完成 ==========");
 	    }
-	    System.out.println("========== " + year + " 資料分類完成 ==========");
 	}
 	
 	private void processCategoryList(String year, String categoryPrefix, List<S3FileDto> categoryList) {
 		String categoryName = categoryPrefix.replace("/", "");
 		if (categoryList.isEmpty()) {
-			System.out.println(year + " - " + categoryName + " 查無資料");
+			log.info(year + " - " + categoryName + " 查無資料");
 			return;
 		}
-		System.out.println(year + " - " + categoryName + " 預計處理筆數: " + categoryList.size());
+		log.info(year + " - " + categoryName + " 預計處理筆數: " + categoryList.size());
 		for (S3FileDto dto : categoryList) {
-			System.out.println("開始處理 [" + year + "][" + categoryName + "] " + dto.getFSaveName());
+			log.info("開始處理 [" + year + "][" + categoryName + "] " + dto.getFSaveName());
 			processFile(dto);
 		}
 	}
@@ -186,17 +167,17 @@ public class S3FileService {
 		try {
 			boolean dbComplete = pgS3FileService.isFileDataComplete(s3Key);
 			boolean s3ObjectExists = s3Util.doesObjectExist(s3Properties.getBucketName(), s3Key);
-			System.out.println("檔案：" + fSaveName + "，DB完整：" + dbComplete + "，S3存在：" + s3ObjectExists);
+			log.info("檔案：" + fSaveName + "，DB完整：" + dbComplete + "，S3存在：" + s3ObjectExists);
 			
 			// 狀況一：DB 與 S3 都完整
 			if (dbComplete && s3ObjectExists) {
-				System.out.println("⏭️ DB 與 S3 都已存在，略過：" + fSaveName);
+				log.info("⏭️ DB 與 S3 都已存在，略過：" + fSaveName);
 				return;
 			}
 
 			// 狀況二：S3 有，但 DB 沒有或不完整
 			if (!dbComplete && s3ObjectExists) {
-				System.out.println("📝 S3 已存在，僅補寫 DB：" + fSaveName);
+				log.info("📝 S3 已存在，僅補寫 DB：" + fSaveName);
 				pgS3FileService.saveFileAndUploadHistory(defaultFileEntity, defaultHistoryEntity);
 				return;
 			}
@@ -222,7 +203,7 @@ public class S3FileService {
 				S3FileUploadHistoryEntity historyEntity = buildDtoService.buildS3FileUploadHistory(s3Properties.getBucketName(), s3Key, dto, contentLength);
 				// HTTP 非成功狀態
 				if (!response.getStatusCode().is2xxSuccessful()) {
-					System.err.println("❌ 下載失敗，HTTP 狀態碼：" + response.getStatusCode().value() + "，檔案：" + fSaveName);
+					log.error("❌ 下載失敗，HTTP 狀態碼：" + response.getStatusCode().value() + "，檔案：" + fSaveName);
 					s3ErrorCsvService.recordBoth(fileEntity, historyEntity);
 					return null;
 				}
@@ -237,12 +218,12 @@ public class S3FileService {
 				if (!dbComplete) {
 					pgS3FileService.saveFileAndUploadHistory(fileEntity, historyEntity);
 				}
-				System.out.println("✅ 處理完成：" + fSaveName);
+				log.info("✅ 處理完成：" + fSaveName);
 				return null;
 			});
 
 		} catch (Exception e) {
-			System.err.println("❌ 檔案處理失敗：" + fSaveName + "，原因：" + e.getMessage());
+			log.error("❌ 檔案處理失敗：" + fSaveName + "，原因：" + e.getMessage());
 			e.printStackTrace();
 			// 可能是： 1. REST 連線失敗 2. S3 上傳失敗 3. PostgreSQL 寫入失敗，因此將 s3_file 與 history 都記錄下來。
 			s3ErrorCsvService.recordBoth(defaultFileEntity, defaultHistoryEntity);

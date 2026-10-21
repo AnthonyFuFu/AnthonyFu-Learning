@@ -7,7 +7,8 @@ import java.util.List;
 public class CommonConstant {
 
 	// CSV 來源時間格式為 "yyyy-M-d HH:mm"（月、日不補零，無秒數），例如 2019-9-20 07:42
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm");
+//	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm");
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/M/d HH:mm");
 	
     public static final String YEAR_15 = "15";
     public static final String YEAR_16 = "16";
@@ -31,11 +32,10 @@ public class CommonConstant {
 //        add(YEAR_19);
 //        add(YEAR_20);
 //        add(YEAR_21);
-
-        add(YEAR_22);
-        add(YEAR_23);
-        add(YEAR_24);
-        add(YEAR_25);
-        add(YEAR_26);
+//        add(YEAR_22);
+//        add(YEAR_23);
+//        add(YEAR_24);
+//        add(YEAR_25);
+//        add(YEAR_26);
     }};
 }

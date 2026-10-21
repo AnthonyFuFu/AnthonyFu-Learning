@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import com.anthonyfu.web.model.S3FileEntity;
 import com.anthonyfu.web.model.S3FileUploadHistoryEntity;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class S3ErrorCsvService {
 
@@ -123,10 +126,10 @@ public class S3ErrorCsvService {
 				Files.writeString(filePath, header + System.lineSeparator(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 			}
 			Files.writeString(filePath, content + System.lineSeparator(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            System.out.println("⚠️ 錯誤資料已寫入 CSV：" + filePath);
+			log.info("⚠️ 錯誤資料已寫入 CSV：" + filePath);
 
         } catch (IOException e) {
-            System.err.println("❌ CSV 錯誤紀錄寫入失敗：" + fileName); // CSV 寫入失敗不能再拋出，否則會蓋掉原始錯誤資訊。
+        	log.error("❌ CSV 錯誤紀錄寫入失敗：" + fileName); // CSV 寫入失敗不能再拋出，否則會蓋掉原始錯誤資訊。
             e.printStackTrace();
         }
     }

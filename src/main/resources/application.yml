@@ -1,7 +1,7 @@
 # 共用設定
 spring:
   profiles:
-    active: qas
+    active: prd
 
   application:
     name: anthonyfu_learning
@@ -100,3 +100,25 @@ aws:
     bucket-name: aws-whq-plm-s3-qas
     access-key: ENC(89Klg4PpKMBAH6Ii4d375j6B/pyPhoqKkX6iRNdUZr0=)
     secret-key: ENC(/syuv+2sFV5psFRm4XZKqYEV7ds1QUGKhflXjX+szu926wXtznsoZWvEyW4+n8VQHC3Aci3tY/k=)
+
+# PRD
+---
+spring:
+  config:
+    activate:
+      on-profile: prd
+
+  datasource:
+    pg:
+      jdbc-url: jdbc:postgresql://aws-whq-plm-db-prd.ch2qsam44cgr.ap-southeast-1.rds.amazonaws.com:5432/plmaws
+      username: plmaws
+      password: ENC(DkewMHBQ50p4LG253RoqYVNKwLtqJuqL)
+      driver-class-name: org.postgresql.Driver
+
+aws:
+  s3:
+    region: ap-southeast-1
+    bucket-name: aws-whq-plm-s3-prd
+    access-key: ENC(3FyMX+EUELoW1fqkBXk1tXFphsjUWpTR4u1b5/tmTJ0=)
+    secret-key: ENC(Cb9pUEp9ijZ8RmEZnyj133ZIcIQuTk7DxG/s7i/F9Q4WA2/pV2vmLIP5PjDBbP9xdDJ6ZhL4e4U=)
+---

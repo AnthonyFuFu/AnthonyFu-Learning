@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JobRunner implements CommandLineRunner {
 
@@ -30,29 +33,21 @@ public class JobRunner implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		log.info("Starting batch jobs...");
+		// 每次啟動都產生新的 JobParameters， 避免相同 JobInstance 已經執行完成而無法再次執行。
+//		JobParameters jobParameters = new JobParametersBuilder().addLong("startAt", System.currentTimeMillis()).toJobParameters();
 
-		System.out.println("Starting batch jobs...");
-		/*
-		 * 每次啟動都產生新的 JobParameters， 避免相同 JobInstance 已經執行完成而無法再次執行。
-		 */
-		JobParameters jobParameters = new JobParametersBuilder().addLong("startAt", System.currentTimeMillis()).toJobParameters();
-
-		/*
-		 * 1. 匯入 Member
-		 */
+		// 1. 匯入 Member
 //		JobExecution memberExecution = jobOperator.start(importMemberJob, jobParameters);
-//		System.out.println("Member batch job launched. Execution ID: " + memberExecution.getId());
+//		log.info("Member batch job launched. Execution ID: " + memberExecution.getId());
 
-		/*
-		 * 2. 匯入 User
-		 */
+		// 2. 匯入 User
 //		JobExecution userExecution = jobOperator.start(importUserJob, jobParameters);
-//		System.out.println("User batch job launched. Execution ID: " + userExecution.getId());
+//		log.info("User batch job launched. Execution ID: " + userExecution.getId());
 
-		/*
-		 * 3. 匯入 S3 File
-		 */
+		// 3. 匯入 S3 File
 //		JobExecution s3FileExecution = jobOperator.start(importS3FileJob, jobParameters);
-//		System.out.println("S3 File batch job launched. Execution ID: " + s3FileExecution.getId());
+//		log.info("S3 File batch job launched. Execution ID: " + s3FileExecution.getId());
 	}
+	
 }

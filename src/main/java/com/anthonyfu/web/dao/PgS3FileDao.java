@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.anthonyfu.web.model.S3FileEntity;
 import com.anthonyfu.web.model.S3FileUploadHistoryEntity;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Repository
 public class PgS3FileDao {
 
@@ -59,7 +62,7 @@ public class PgS3FileDao {
 				entity.getPcbNo(), entity.getPcbVersion(), entity.getFileVersion(), entity.getCreateBy(),
 				entity.getCreateDt(), entity.getUpdateBy(), entity.getUpdateDt(), entity.getObjectKey());
 
-		System.out.println("🔄 s3_file 已更新: " + entity.getObjectKey());
+		log.info("🔄 s3_file 已更新: " + entity.getObjectKey());
     }
 
     // 新增 s3file 紀錄
@@ -75,7 +78,7 @@ public class PgS3FileDao {
 				entity.getFileSize(), entity.getPcbNo(), entity.getPcbVersion(), entity.getFileVersion(),
 				entity.getCreateBy(), entity.getCreateDt(), entity.getUpdateBy(), entity.getUpdateDt());
 
-		System.out.println("✅ s3_file 新增成功: " + entity.getObjectKey());
+		log.info("✅ s3_file 新增成功: " + entity.getObjectKey());
     }
     
     // 更新既有的 History 紀錄
@@ -91,7 +94,7 @@ public class PgS3FileDao {
 				entity.getPcbNo(), entity.getPcbVersion(), entity.getFileVersion(), entity.getUpdateBy(),
 				entity.getUpdateDt(), entity.getObjectKey());
 
-		System.out.println("🔄 s3_file_upload_history 已更新: " + entity.getObjectKey());
+		log.info("🔄 s3_file_upload_history 已更新: " + entity.getObjectKey());
     }
     
     // 新增 History 紀錄
@@ -107,7 +110,7 @@ public class PgS3FileDao {
 				entity.getFileSize(), entity.getPcbNo(), entity.getPcbVersion(), entity.getFileVersion(),
 				entity.getUpdateBy(), entity.getUpdateDt());
 
-		System.out.println("✅ s3_file_upload_history 新增成功: " + entity.getObjectKey());
+		log.info("✅ s3_file_upload_history 新增成功: " + entity.getObjectKey());
     }
 	
     // 檢查 s3_file 是否有完整資料
