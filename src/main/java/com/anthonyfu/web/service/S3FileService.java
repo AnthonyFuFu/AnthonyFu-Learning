@@ -121,7 +121,8 @@ public class S3FileService {
 		    log.info("========== " + label + " 開始處理 ==========");
 		    log.info(label + " 資料筆數: " + fileList.size());
 		    for (S3FileDto dto : fileList) {
-		        processFile(dto); // 正式搬資料時使用全部資料
+//		        processFile(dto); // 正式搬資料時使用全部資料
+		        processFileOverwrite(dto); // 正式搬資料時補充全部資料
 		    }
 		    log.info("========== " + label + " 處理完成 ==========");
 	    } else {
@@ -229,4 +230,57 @@ public class S3FileService {
 			s3ErrorCsvService.recordBoth(defaultFileEntity, defaultHistoryEntity);
 		}
 	}
+	
+	
+	// 新方法：無論 S3 或 DB 是否已有資料，都重新下載並覆寫
+	public void processFileOverwrite(S3FileDto dto) {
+		String folderPrefix = FileUtil.getFolderPrefix(dto.getFSaveName());
+		String fSaveName = dto.getFSaveName().toUpperCase(Locale.ROOT);
+		String s3Key = folderPrefix + fSaveName;
+		long defaultFileSize = dto.getFSize() != null ? dto.getFSize() : 0L;
+		S3FileEntity defaultFileEntity = buildDtoService.buildS3File(s3Properties.getBucketName(), s3Key, dto, defaultFileSize);
+		S3FileUploadHistoryEntity defaultHistoryEntity = buildDtoService.buildS3FileUploadHistory(s3Properties.getBucketName(), s3Key, dto, defaultFileSize);
+
+		try {
+			String encodedFileName = URLEncoder.encode(dto.getFPath(), StandardCharsets.UTF_8);
+			String downloadUrl = String.format("%s?type=1&serialID=%s&fileName=%s", baseUrl, dto.getSerialID(), encodedFileName);
+
+			restClient.get().uri(URI.create(downloadUrl)).exchange((request, response) -> {
+				if (!response.getStatusCode().is2xxSuccessful()) {
+					log.error("❌ 下載失敗，HTTP 狀態碼：{}，檔案：{}", response.getStatusCode().value(), fSaveName);
+					s3ErrorCsvService.recordBoth(defaultFileEntity, defaultHistoryEntity);
+					return null;
+				}
+
+				long responseContentLength = response.getHeaders().getContentLength();
+				long contentLength = dto.getFSize() != null ? dto.getFSize() : responseContentLength;
+
+				if (contentLength < 0) {
+					contentLength = 0;
+				}
+
+				S3FileEntity fileEntity = buildDtoService.buildS3File(s3Properties.getBucketName(), s3Key, dto, contentLength);
+				S3FileUploadHistoryEntity historyEntity = buildDtoService.buildS3FileUploadHistory(s3Properties.getBucketName(), s3Key, dto, contentLength);
+
+				try (InputStream inputStream = response.getBody()) {
+					if (inputStream == null) {
+						throw new IllegalStateException("下載回應沒有檔案內容：" + fSaveName);
+					}
+					// 相同 bucket + key 會覆寫既有的 S3 物件
+					s3Util.putObject(s3Properties.getBucketName(), s3Key, inputStream, contentLength);
+				}
+				// DAO 會依 object_key 更新既有資料；找不到才新增
+				pgS3FileService.saveFileAndUploadHistory(fileEntity, historyEntity);
+
+				log.info("✅ 覆寫處理完成：{}", fSaveName);
+				return null;
+			});
+
+		} catch (Exception e) {
+			log.error("❌ 檔案覆寫失敗：{}，原因：{}", fSaveName, e.getMessage(), e);
+			s3ErrorCsvService.recordBoth(defaultFileEntity, defaultHistoryEntity);
+		}
+	}
+	
+	
 }

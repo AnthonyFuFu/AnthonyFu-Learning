@@ -7,6 +7,7 @@ import java.util.List;
 public class CommonConstant {
 
 	// CSV 來源時間格式為 "yyyy-M-d HH:mm"（月、日不補零，無秒數），例如 2019-9-20 07:42
+//	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm:ss");
 //	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm");
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/M/d HH:mm");
 	

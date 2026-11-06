@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "s3_file")
+//@Table(name = "s3_file")
+//@Table(name = "s3_file_ex")
+@Table(name = "s3_file_ex2")
 //@Table(name = "origin_s3_file")
 @NoArgsConstructor
 @AllArgsConstructor

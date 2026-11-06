@@ -11,6 +11,9 @@ spring:
       name: admin
       password: 123456
 
+  lifecycle:
+    timeout-per-shutdown-phase: 60m
+
   thymeleaf:
     prefix: classpath:/templates/
     cache: false
